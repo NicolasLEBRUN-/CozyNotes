@@ -44,15 +44,18 @@ public class DaoNote extends SQLiteOpenHelper{
                 "date_edition datetime)";
 
         db.execSQL(rq);
-        this.populateDB(db);
     }
 
-    private void populateDB(SQLiteDatabase db) {
+    private List<NoteItem> populateDBfromCozy(SQLiteDatabase db) {
 
-        for(int i = 0; i < 2 ; i++) {
+        //TODO get list from cozycloud
+        //TODO update DB
+        List<NoteItem> list = new ArrayList<>();
+        /*for(int i = 0; i < 2 ; i++) {
             NoteItem note = new NoteItem("Note Title "+i, "Note Desc "+i, null);
             insertNote(note, db);
-        }
+        }*/
+        return list;
     }
 
     public void insertNote(NoteItem item, SQLiteDatabase db) {
@@ -92,6 +95,16 @@ public class DaoNote extends SQLiteOpenHelper{
 
     public List<NoteItem> getNotes() {
 
+        try {
+            List<NoteItem> list = this.populateDBfromCozy(this.getWritableDatabase());
+            return list;
+        } catch (Exception e){
+            return getNoteListFromLocalDb();
+        }
+
+    }
+
+    public List<NoteItem> getNoteListFromLocalDb() {
         List<NoteItem> list = new ArrayList<>();
 
         Cursor cursor = this.getReadableDatabase().rawQuery("select * from notes order by date_edition desc", null);

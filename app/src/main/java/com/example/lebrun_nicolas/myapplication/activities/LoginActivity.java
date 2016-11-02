@@ -2,6 +2,7 @@ package com.example.lebrun_nicolas.myapplication.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -32,63 +33,68 @@ public class LoginActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        if( PreferenceManager.getDefaultSharedPreferences(this).getString("token", null) == null) {
+            setContentView(R.layout.activity_main);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
 
-        this.urlInputField = (EditText) findViewById(R.id.urlInputField);
-        this.pwdInputField = (EditText) findViewById(R.id.pwdInputField);
-        this.connectButton = (Button) findViewById(R.id.connectButton);
+            this.urlInputField = (EditText) findViewById(R.id.urlInputField);
+            this.pwdInputField = (EditText) findViewById(R.id.pwdInputField);
+            this.connectButton = (Button) findViewById(R.id.connectButton);
 
-        this.connectButton.setEnabled(false);
+            this.connectButton.setEnabled(false);
 
-        urlInputField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            urlInputField.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
+                }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-            }
+                }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(TextUtils.isEmpty(urlInputField.getText().toString())){
-                    urlInputField.setError("Ce champ ne doit pas être vide.");
-                } else {
-                    if(!URLUtil.isValidUrl(urlInputField.getText().toString())) {
-                        urlInputField.setError("Veuillez saisir une URL valide.");
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if(TextUtils.isEmpty(urlInputField.getText().toString())){
+                        urlInputField.setError("Ce champ ne doit pas être vide.");
+                    } else {
+                        if(!URLUtil.isValidUrl(urlInputField.getText().toString())) {
+                            urlInputField.setError("Veuillez saisir une URL valide.");
+                        }
                     }
+
+                    disableConnectButtonIfNecessary();
+                }
+            });
+
+            pwdInputField.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
                 }
 
-                disableConnectButtonIfNecessary();
-            }
-        });
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-        pwdInputField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(TextUtils.isEmpty(pwdInputField.getText().toString())) {
-                    pwdInputField.setError("Ce champ ne doit pas être vide.");
                 }
 
-                disableConnectButtonIfNecessary();
-            }
-        });
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if(TextUtils.isEmpty(pwdInputField.getText().toString())) {
+                        pwdInputField.setError("Ce champ ne doit pas être vide.");
+                    }
 
+                    disableConnectButtonIfNecessary();
+                }
+            });
+        } else {
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -119,6 +125,7 @@ public class LoginActivity extends AppCompatActivity{
         connection.connectToCozy(this.urlInputField.getText().toString(), this.pwdInputField.getText().toString());
         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
         startActivity(intent);
+
     }
 
     public void disableConnectButtonIfNecessary() {
