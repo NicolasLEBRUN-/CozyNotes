@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.lebrun_nicolas.myapplication.fragments.notes.NoteItem;
+import com.example.lebrun_nicolas.myapplication.helpers.CozyHelper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,9 +23,11 @@ import java.util.Locale;
 public class DaoNote extends SQLiteOpenHelper{
 
     private static DaoNote instance;
+    private Context context;
 
     public DaoNote(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
+        this.context = context;
     }
 
     public static DaoNote getInstance(Context context) {
@@ -46,15 +49,11 @@ public class DaoNote extends SQLiteOpenHelper{
         db.execSQL(rq);
     }
 
-    private List<NoteItem> populateDBfromCozy(SQLiteDatabase db) {
+    private List<NoteItem> populateDBfromCozy(SQLiteDatabase db) throws Exception {
 
-        //TODO get list from cozycloud
-        //TODO update DB
-        List<NoteItem> list = new ArrayList<>();
-        /*for(int i = 0; i < 2 ; i++) {
-            NoteItem note = new NoteItem("Note Title "+i, "Note Desc "+i, null);
-            insertNote(note, db);
-        }*/
+        CozyHelper.getInstance(this.context).getCozyNotes();
+        //TODO update local DB
+        List<NoteItem> list = this.getNoteListFromLocalDb();
         return list;
     }
 

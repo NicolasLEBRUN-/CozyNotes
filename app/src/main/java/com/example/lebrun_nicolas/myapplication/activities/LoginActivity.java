@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,13 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.lebrun_nicolas.myapplication.R;
-import com.example.lebrun_nicolas.myapplication.helpers.CozyConnectionHelper;
+import com.example.lebrun_nicolas.myapplication.helpers.CozyHelper;
 
-import java.io.Closeable;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class LoginActivity extends AppCompatActivity{
 
@@ -121,7 +116,7 @@ public class LoginActivity extends AppCompatActivity{
 
     public void login(View view) throws IOException {
 
-        CozyConnectionHelper connection = CozyConnectionHelper.getInstance(this.getApplicationContext());
+        CozyHelper connection = CozyHelper.getInstance(this.getApplicationContext());
         connection.connectToCozy(this.urlInputField.getText().toString(), this.pwdInputField.getText().toString());
         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
         startActivity(intent);

@@ -14,31 +14,33 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+
 import javax.net.ssl.HttpsURLConnection;
 
-/**
- * Created by LEBRUN_NICOLAS on 26/10/2016.
- */
+public class CozyHelper {
 
-public class CozyConnectionHelper {
-
-    private static CozyConnectionHelper cozyInstance;
+    private static CozyHelper cozyInstance;
     private static SharedPreferences preferences;
+    private String urlCozy;
 
-    public CozyConnectionHelper(Context context) {
+    public CozyHelper(Context context) {
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public static CozyConnectionHelper getInstance(Context context) {
+    public static CozyHelper getInstance(Context context) {
         if(cozyInstance == null) {
-            cozyInstance = new CozyConnectionHelper(context);
+            cozyInstance = new CozyHelper(context);
         }
         return cozyInstance;
     }
 
     public void connectToCozy(String urlConnect, String pwd) throws IOException {
-
+        urlCozy = urlConnect;
         new Thread(new ConnectionThread(urlConnect, pwd, this.preferences)).start();
+    }
+
+    public void getCozyNotes() {
+        new Thread(new GetNoteThread(urlCozy, this.preferences)).start();
     }
 }
 
@@ -108,5 +110,41 @@ class ConnectionThread implements Runnable {
        }
 
 
+    }
+}
+
+/* TODO: Get Note from API */
+
+class GetNoteThread implements Runnable {
+
+    private String urlCozy;
+    private SharedPreferences preferences;
+
+    public GetNoteThread(String urlCozy, SharedPreferences preferences) {
+        this.urlCozy = urlCozy;
+        this.preferences = preferences;
+    }
+
+    @Override
+    public void run() {
+        try {
+            HttpsURLConnection c = (HttpsURLConnection) new URL(this.urlCozy + "/data").openConnection();
+            c.setRequestMethod("GET");
+            c.setDoOutput(true);
+            c.setRequestProperty("Content-Type", "application/json");
+            c.setRequestProperty("Authorization", "Basic "+this.preferences.getString("token", null));
+            InputStream inputStream;
+            try {
+                inputStream = c.getInputStream();
+            } catch (IOException e) {
+                inputStream = c.getErrorStream();
+            }
+            InputStreamReader isr = new InputStreamReader(inputStream);
+            BufferedReader br = new BufferedReader(isr);
+            String data = br.readLine();
+            System.out.println(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
