@@ -4,7 +4,7 @@
   - Nicolas LEBRUN
   - Adrien REDON
   
-## Functionnalities:
+## Functionalities:
   - Create/Read/Update/Delete on local DB
   - Connect device to CozyCloud
   
