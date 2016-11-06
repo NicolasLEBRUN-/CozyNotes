@@ -16,9 +16,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by LEBRUN_NICOLAS on 13/10/2016.
- */
 
 public class DaoNote extends SQLiteOpenHelper{
 

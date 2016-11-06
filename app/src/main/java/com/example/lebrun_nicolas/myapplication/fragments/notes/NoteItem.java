@@ -1,11 +1,6 @@
 package com.example.lebrun_nicolas.myapplication.fragments.notes;
 
-import java.util.Calendar;
 import java.util.Date;
-
-/**
- * Created by LEBRUN_NICOLAS on 27/09/2016.
- */
 
 public class NoteItem {
 
