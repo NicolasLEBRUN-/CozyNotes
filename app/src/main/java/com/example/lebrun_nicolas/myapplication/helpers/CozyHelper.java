@@ -128,7 +128,7 @@ class GetNoteThread implements Runnable {
     @Override
     public void run() {
         try {
-            HttpsURLConnection c = (HttpsURLConnection) new URL(this.urlCozy + "/data").openConnection();
+            HttpsURLConnection c = (HttpsURLConnection) new URL(this.urlCozy + "/ds-api/request/note/all").openConnection();
             c.setRequestMethod("GET");
             c.setDoOutput(true);
             c.setRequestProperty("Content-Type", "application/json");
@@ -142,7 +142,7 @@ class GetNoteThread implements Runnable {
             InputStreamReader isr = new InputStreamReader(inputStream);
             BufferedReader br = new BufferedReader(isr);
             String data = br.readLine();
-            System.out.println(data);
+            System.out.println(data); // All notes should be here
         } catch (IOException e) {
             e.printStackTrace();
         }
